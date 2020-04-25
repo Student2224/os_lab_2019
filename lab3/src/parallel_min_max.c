@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
   int seed = -1;
   int array_size = -1;
   int pnum = -1;
+  int timeout=0;
   bool with_files = false;
  
   while (true) {
@@ -27,7 +28,9 @@ int main(int argc, char **argv) {
     static struct option options[] = {{"seed", required_argument, 0, 0},
                                       {"array_size", required_argument, 0, 0},
                                       {"pnum", required_argument, 0, 0},
+                                      {"timeout", optional_argument, 0, 0},
                                       {"by_files", no_argument, 0, 'f'},
+                                      
                                       {0, 0, 0, 0}};
  
     int option_index = 0;
@@ -65,8 +68,11 @@ int main(int argc, char **argv) {
             }
             // error handling
             break;
-          case 3:
+          case 4:
             with_files = true;
+            break;
+            case 3:
+            timeout=atoi(optarg);
             break;
  
           defalut:
@@ -115,6 +121,8 @@ int main(int argc, char **argv) {
     pid_t child_pid = fork();
     if (child_pid >= 0) {
       // successful fork
+      alarm(timeout);
+      kill(child_pid, SIGKILL);
       active_child_processes += 1;
       if (child_pid == 0) {
         // child process
