@@ -2,21 +2,21 @@ all: client server
 
 dbg: client-dbg server-dbg
 
-client-dbg: client.c libnetfac
+client-dbg: client.c libnetfaculty
 	gcc -o client-dbg.out client.c -I./libnetfac -L./ -lpthread -lm -lnetfac -g -O0
 
-server-dbg: server.c libnetfac
-	gcc -o server-dbg.out  server.c -I./libnetfac -L./ -lpthread -lm -lnetfac -g -O0
+server-dbg: server.c libnetfaculty
+	gcc -o server-dbg.out  server.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty -g -O0
 
-client: client.c libnetfac
-	gcc -o client.out client.c -I./libnetfac -L./ -lpthread -lm -lnetfac
+client: client.c libnetfaculty
+	gcc -o client.out client.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty
 
-server: server.c libnetfac
-	gcc -o server.out server.c -I./libnetfac -L./ -lpthread -lm -lnetfac
+server: server.c libnetfaculty
+	gcc -o server.out server.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty
 
-libnetfac: ./libnetfac/netfac.c
-	gcc -o ./libnetfac/libnetfac.o -c ./libnetfac/netfac.c -I./libnetfac
-	ar rcs ./libnetfac.a ./libnetfac/libnetfac.o
+libnetfaculty: ./libnetfaculty/netfaculty.c
+	gcc -o ./libnetfaculty/libnetfaculty.o -c ./libnetfaculty/netfaculty.c -I./libnetfaculty
+	ar rcs ./libnetfaculty.a ./libnetfaculty/libnetfaculty.o
 
 clean:
 	rm -r *.o *.a *.out -f
