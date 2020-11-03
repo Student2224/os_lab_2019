@@ -1,22 +1,17 @@
-all: client server
+CC=gcc
+CFLAGS=-I.
 
-dbg: client-dbg server-dbg
+lib: header.c
+	$(CC) -o header.o -c header.c $(CFLAGS)
+	ar rcs libheader.a header.o
 
-client-dbg: client.c libnetfaculty
-	gcc -o client-dbg.out client.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty -g -O0
+server: server.c libhead.a
+	$(CC) -o server.o -c server.c $(CFLAGS)
+	$(CC) -o server server.o -L -lhead -pthread  $(CFLAGS)
 
-server-dbg: server.c libnetfaculty
-	gcc -o server-dbg.out  server.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty -g -O0
-
-client: client.c libnetfaculty
-	gcc -o client.out client.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty
-
-server: server.c libnetfaculty
-	gcc -o server.out server.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty
-
-libnetfaculty: ./libnetfaculty/netfaculty.c
-	gcc -o ./libnetfaculty/libnetfaculty.o -c ./libnetfaculty/netfaculty.c -I./libnetfaculty
-	ar rcs ./libnetfaculty.a ./libnetfaculty/libnetfaculty.o
+client: client.c libhead.a
+	$(CC) -o client.o -c client.c $(CFLAGS)
+	$(CC) -o client client.o -L -lhead $(CFLAGS)
 
 clean:
-	rm -r *.o *.a *.out -f
+	rm client server client.o server.o header.o libhead.a
