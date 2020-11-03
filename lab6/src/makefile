@@ -3,7 +3,7 @@ all: client server
 dbg: client-dbg server-dbg
 
 client-dbg: client.c libnetfaculty
-	gcc -o client-dbg.out client.c -I./libnetfac -L./ -lpthread -lm -lnetfac -g -O0
+	gcc -o client-dbg.out client.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty -g -O0
 
 server-dbg: server.c libnetfaculty
 	gcc -o server-dbg.out  server.c -I./libnetfaculty -L./ -lpthread -lm -lnetfaculty -g -O0
