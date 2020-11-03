@@ -20,8 +20,8 @@
 #define VERBOSE
 
 struct client_context {
-  fac_args_t start_args;
-  fac_server_list_t* servers_list;
+  faculty_args_t start_args;
+  faculty_server_list_t* servers_list;
 #define servers_list context.servers_list
   uint32_t servers_num;
 #define servers_num context.servers_num
@@ -52,7 +52,7 @@ static void server_recieve_task(fac_server_t* server) {
 
 /* Join threads and free data */
 static void finalize_tasks() {
-  fac_server_list_t* iter = servers_list;
+  faculty_server_list_t* iter = servers_list;
   for (int i = 0; iter != NULL; ) {
     if (i < servers_num)
       /* Some servers may be unused 
@@ -65,7 +65,7 @@ static void finalize_tasks() {
 #ifdef VERBOSE
     printf("Thread %d joined\n", iter->server.thread);
 #endif
-    fac_server_list_t* prev = iter;
+    faculty_server_list_t* prev = iter;
     iter = iter->next;
     free(prev);
     i++;
@@ -73,7 +73,7 @@ static void finalize_tasks() {
 }
 
 /* <X.X.X.X>:<PORT> */
-static fac_server_list_t* read_servers_file(const char* filename, int* len) {
+static faculty_server_list_t* read_servers_file(const char* filename, int* len) {
   if (access(filename, F_OK) == -1) {
     printf("Error: file %s does not exist\n", filename);
     return 0;
@@ -85,10 +85,10 @@ static fac_server_list_t* read_servers_file(const char* filename, int* len) {
     return 0;
   }
 
-  fac_server_list_t* first = NULL;
+  faculty_server_list_t* first = NULL;
   int i;
   for (i = 0 ;; ++i) {
-    fac_server_list_t* head = (fac_server_list_t*)malloc(sizeof(fac_server_list_t));
+    faculty_server_list_t* head = (faculty_server_list_t*)malloc(sizeof(faculty_server_list_t));
     head->next = NULL;
     int res = fscanf(file, "%s : %d", head->server.ip, &head->server.port);
     if (res != 2) {
@@ -209,10 +209,10 @@ int main(int argc, char **argv) {
 
   /* Send data and wait for results */
   float block = (float)k / servers_num;
-  fac_server_list_t* servers_list_item = servers_list;
+  faculty_server_list_t* servers_list_item = servers_list;
   for (int i = 0; i < servers_num; i++) {
 
-    fac_server_t* server = &servers_list_item->server;
+    faculty_server_t* server = &servers_list_item->server;
     /* Prepare package */
     server->args.begin = round(block * (float)i) + 1;
     server->args.end = round(block * (i + 1.f)) + 1;
