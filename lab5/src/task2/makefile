@@ -1,4 +1,4 @@
-parallel_fac: main.c
+parallel_f: main.c
 	gcc  -std=c99 -o parallel_f.out main.c -lpthread -lm
 
 clean:
