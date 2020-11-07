@@ -6,14 +6,14 @@
 #include <math.h>
 
 static uint64_t res = 1;
-static pthread_mutex_t fac_mtx = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
   pthread_t thread;
   uint64_t begin;
   uint64_t end;
   uint32_t mod;
-} fac_thread_t;
+} f_thread_t;
 
 static uint64_t MultModulo(uint64_t a, uint64_t b, uint64_t mod) {
   uint64_t result = 0;
@@ -29,17 +29,17 @@ static uint64_t MultModulo(uint64_t a, uint64_t b, uint64_t mod) {
   return result % mod;
 }
 
-static void fac_threaded(fac_thread_t* f) {
+static void threaded(f_thread_t* f) {
   printf("Thread: id=%lu from %lu to %lu\n", f->thread, f->begin, f->end - 1);
   for (uint64_t i = f->begin; i < f->end; i++) {
-    pthread_mutex_lock(&fac_mtx);
+    pthread_mutex_lock(&mtx);
     res = MultModulo(res, i, f->mod);
     if (!res) {
       printf("Error: uint64_t overflow (i=%lu)\n", i);
-      pthread_mutex_unlock(&fac_mtx);
+      pthread_mutex_unlock(&mtx);
       return;
     }
-    pthread_mutex_unlock(&fac_mtx);
+    pthread_mutex_unlock(&mtx);
   }
 }
 
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
   }
 
   float block = (float)k / pnum;
-  fac_thread_t thread_pool[pnum];
+  f_thread_t thread_pool[pnum];
 
   for (uint32_t i = 0; i < pnum; i++) {
     int begin = round(block * (float)i) + 1;
@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
     thread_pool[i].end = end;
     thread_pool[i].mod = mod;
 
-    if (pthread_create(&thread_pool[i].thread, NULL, (void *)fac_threaded, (void*)&thread_pool[i]) != 0) {
+    if (pthread_create(&thread_pool[i].thread, NULL, (void *)threaded, (void*)&thread_pool[i]) != 0) {
       printf("Error: cannot create new pthread\n");
       return -1;
     }
